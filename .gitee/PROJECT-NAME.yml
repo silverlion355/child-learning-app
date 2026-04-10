@@ -1,0 +1,27 @@
+name: Build Flutter APK
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+cache:
+  paths:
+    - ~/.pub-cache
+
+stages:
+  - stage: Build
+    runs-on: ubuntu-latest
+    script: |
+      wget -q https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.24.0-stable.tar.xz
+      tar xf flutter_linux_3.24.0-stable.tar.xz
+      export PATH="$PATH:/opt/run/flutter/bin"
+      flutter pub get
+      flutter build apk --debug
+    artifacts:
+      when: always
+      paths:
+        - build/app/outputs/flutter-apk/*.apk
